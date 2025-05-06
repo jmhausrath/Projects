@@ -315,12 +315,6 @@ def evaluate_board(board):
 def calculate_pawn_placement(board):
     """
     Evaluate pawn placement by scoring diagonal support and penalizing for pawns in the same column.
-    
-    Parameters:
-    - board: A `chess.Board` object representing the current board state.
-    
-    Returns:
-    - int: (White pawn placement score - Black pawn placement score)
     """
     white_score = 0
     black_score = 0
@@ -367,15 +361,7 @@ def calculate_pawn_placement(board):
     return white_score - black_score
 
 def calculate_knight_placement(board):
-    """
-    Evaluate knight placement by scoring mobility and pawn defense.
-    
-    Parameters:
-    - board: A `chess.Board` object representing the current board state.
-    
-    Returns:
-    - int: (White knight placement score - Black knight placement score)
-    """
+
     white_score = 0
     black_score = 0
     
@@ -413,16 +399,7 @@ def calculate_knight_placement(board):
     return white_score - black_score
 
 def calculate_bishop_placement(board):
-    """
-    Evaluate bishop placement by scoring open diagonals, proximity to the enemy king, 
-    and control of the center of the board.
-    
-    Parameters:
-    - board: A `chess.Board` object representing the current board state.
-    
-    Returns:
-    - int: (White bishop placement score - Black bishop placement score)
-    """
+
     white_score = 0
     black_score = 0
     
@@ -483,15 +460,7 @@ def calculate_bishop_placement(board):
     return white_score - black_score
 
 def calculate_rook_placement(board):
-    """
-    Evaluate rook placement by scoring open lines and seeing other rooks/queens of the same color.
-    
-    Parameters:
-    - board: A `chess.Board` object representing the current board state.
-    
-    Returns:
-    - int: (White rook placement score - Black rook placement score)
-    """
+
     white_score = 0
     black_score = 0
     
@@ -537,16 +506,7 @@ def calculate_rook_placement(board):
 
 
 def calculate_king_safety(board):
-    """
-    Evaluate king safety by scoring pieces within a two-square radius of each king.
-    
-    Parameters:
-    - board: A `chess.Board` object representing the current board state.
-    
-    Returns:
-    - int: (White king safety score - Black king safety score)
-    """
-    # Default scoring parameters (modifiable later)
+
     scores = {
         (chess.PAWN, 'friendly'): 6,
         (chess.KNIGHT, 'friendly'): 1,
@@ -578,15 +538,12 @@ def calculate_king_safety(board):
     white_king_square = board.king(chess.WHITE)
     black_king_square = board.king(chess.BLACK)
     
-    # Get king safety zones
     white_king_zone = get_king_zone(white_king_square)
     black_king_zone = get_king_zone(black_king_square)
     
-    # Initialize scores
     white_score = 0
     black_score = 0
-    
-    # Calculate white king safety score
+
     for square in white_king_zone:
         piece = board.piece_at(square)
         if piece:  # Ensure there's a piece on this square
