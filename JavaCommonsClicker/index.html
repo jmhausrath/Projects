@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fishing Clicker Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="banner">
+        <h1>Fishing Clicker Game</h1>
+        <p>Money: $<span id="money">0</span></p>
+        <div id="fish-bar"></div>
+    </div>
+    <div class="main-content">
+        <div class="section left">
+            <p>Rods: <span id="rod-count">1</span> / 10</p>
+            <button id="cast-rod-btn">Cast Rod</button>
+            <div id="progress-bars"></div>
+        </div>
+        <div class="section middle">
+            <button id="buy-rod-btn">Buy Rod ($20)</button>
+        </div>
+        <div class="section right">
+            <button id="sell-fish-btn">Sell Fish (Total: $<span id="sell-value">0</span>)</button>
+            <p>Fish Inventory:</p>
+            <ul id="fish-inventory"></ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

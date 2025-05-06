@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scribe Patient Tracker by Jackson</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start; 
+    }
+
+    h1 {
+      color: #343a40;
+      font-size: 24px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+    }
+
+    .date-container {
+      margin-left: auto;
+    }
+
+    .input-container {
+      margin-bottom: 10px;
+      display: flex;
+      gap: 10px;
+      width: 90%; 
+    }
+
+    input[type="text"], input[type="date"] {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input[type="text"] {
+      width: 300px;
+    }
+
+    .patients-container {
+      width: 90%; 
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      background: white;
+      border-radius: 5px;
+    }
+
+    .patient-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .patient-row span {
+      flex: 1; 
+      min-width: 150px;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .checkboxes {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px; 
+      flex: 1; 
+    }
+
+    .notes-section {
+      flex: 3; 
+    }
+
+    .notes-section input[type="text"] {
+      width: 500px; 
+      padding: 5px;
+    }
+
+    .patient-row button {
+      padding: 5px 10px;
+      font-size: 14px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .patient-row button.submitted {
+      background-color: #155724;
+    }
+
+    .bottom-buttons {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bottom-buttons button {
+      padding: 10px 15px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .export-btn {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .clear-btn {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>
+    Scribe Patient Tracker by Jackson
+    <div class="date-container">
+      <input id="date-input" type="date" placeholder="Enter date" />
+    </div>
+  </h1>
+  <div class="input-container">
+    <input id="patient-name-input" type="text" placeholder="Enter patient name..." />
+  </div>
+  <div class="patients-container" id="patients-container"></div>
+  <div class="bottom-buttons">
+    <button class="export-btn" onclick="exportData()">Export Patients</button>
+    <button class="clear-btn" onclick="clearAll()">Clear All</button>
+  </div>
+
+  <script>
+    const patientsContainer = document.getElementById("patients-container");
+    const patientNameInput = document.getElementById("patient-name-input");
+    const dateInput = document.getElementById("date-input");
+
+    patientNameInput.addEventListener("keypress", function (event) {
+      if (event.key === "Enter" && patientNameInput.value.trim() !== "") {
+        addPatient(patientNameInput.value.trim());
+        patientNameInput.value = "";
+      }
+    });
+
+    function addPatient(name) {
+      const patientRow = document.createElement("div");
+      patientRow.classList.add("patient-row");
+
+      patientRow.innerHTML = `
+        <span>${name}</span>
+        <div class="checkboxes">
+          <label class="checkbox-label"><input type="checkbox" /> Prepped</label>
+          <label class="checkbox-label"><input type="checkbox" /> XRs</label>
+          <label class="checkbox-label"><input type="checkbox" /> PE</label>
+          <label class="checkbox-label"><input type="checkbox" /> Done</label>
+        </div>
+        <div class="notes-section">
+          <input type="text" placeholder="Notes..." />
+        </div>
+        <button class="submitted" onclick="toggleSubmitted(this)">SUBMITTED</button>
+      `;
+
+      patientsContainer.appendChild(patientRow);
+    }
+
+    function toggleSubmitted(button) {
+      const row = button.closest(".patient-row");
+      const isSubmitted = row.style.backgroundColor === "rgb(212, 237, 218)";
+      if (isSubmitted) {
+        row.style.backgroundColor = "";
+        button.style.backgroundColor = "#28a745";
+        button.textContent = "SUBMITTED";
+      } else {
+        row.style.backgroundColor = "#d4edda";
+        button.style.backgroundColor = "#155724";
+        button.textContent = "✔ SUBMITTED";
+      }
+    }
+
+    function exportData() {
+      const rows = document.querySelectorAll(".patient-row");
+      const data = Array.from(rows).map(row => {
+        const name = row.querySelector("span").textContent;
+        const statuses = Array.from(row.querySelectorAll("input[type='checkbox']"))
+          .map((cb, index) => {
+            const labels = ["Prepped", "X-rays", "PE", "Done"];
+            return `${labels[index]}: ${cb.checked}`;
+          })
+          .join(", ");
+        const notes = row.querySelector(".notes-section input").value.trim();
+        return `Name: ${name}\nStatuses: ${statuses}\nNotes: ${notes}\n`;
+      });
+
+      // Determine filename
+      const enteredDate = dateInput.value;
+      const today = new Date().toISOString().split("T")[0];
+      const filename = `${enteredDate || today}PatientNotes.txt`;
+
+      const blob = new Blob([data.join("\n\n")], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    function clearAll() {
+      if (confirm("Are you sure you want to delete all patients?")) {
+        patientsContainer.innerHTML = "";
+      }
+    }
+  </script>
+</body>
+</html>
